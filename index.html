@@ -24,12 +24,7 @@ video{width:100%;height:100%;object-fit:contain;background:#000}
 
 <script>
 (function(){
-  const C = {
-    url: "https://jiotvpllive.cdn.jio.com/bpk-tv/Star_Sports_HD1_Hindi_BTS/WDVLive/index.mpd",
-    kid: "400131994b445d8c8817202248760fda",
-    key: "2d56cb6f07a75b9aff165d534ae2bfc4",
-    cookie: "https://raw.githubusercontent.com/VGLive/ss/refs/heads/main/ss1h.json"
-  };
+  const url = "https://vt-ip.vodep39240327.workers.dev/1965.m3u8";
 
   document.addEventListener("DOMContentLoaded", async () => {
     shaka.polyfill.installAll();
@@ -49,34 +44,16 @@ video{width:100%;height:100%;object-fit:contain;background:#000}
       });
     
     p.configure({
-      drm: { clearKeys: { [C.kid]: C.key } },
       manifest: { defaultPresentationDelay: 5 },
       streaming: { lowLatencyMode: true, bufferingGoal: 10, rebufferingGoal: 2, safeSeekOffset: 5 }
     });
 
-    let ck = "";
     try {
-      const res = await fetch(C.cookie, { cache: "no-store" });
-      ck = (await res.json()).cookie || "";
-    } catch(e) {}
-
-    if (ck) {
-      p.getNetworkingEngine().registerRequestFilter((type, req) => {
-        req.headers["Referer"] = "https://www.jiotv.com/";
-        req.headers["User-Agent"] = "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
-        req.headers["Cookie"] = ck;
-        
-        let uck = ck.startsWith("__hdnea__=") ? ck.substring(10) : ck;
-        if ((type === shaka.net.NetworkingEngine.RequestType.MANIFEST || type === shaka.net.NetworkingEngine.RequestType.SEGMENT) && !req.uris[0].includes("__hdnea__")) {
-          req.uris[0] += (req.uris[0].includes("?") ? "&" : "?") + "__hdnea__=" + uck;
-        }
-      });
-    }
-
-    try {
-      await p.load(C.url);
+      await p.load(url);
       v.play().catch(()=>{});
-    } catch(e) {}
+    } catch(e) {
+      console.error("Error loading stream", e);
+    }
 
     v.addEventListener("play", () => { v.muted = true; }, { once: true });
   });
