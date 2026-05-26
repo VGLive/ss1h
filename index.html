@@ -55,7 +55,7 @@ video{width:100%;height:100%;object-fit:contain;background:#000}
       console.error("Error loading stream", e);
     }
 
-    v.addEventListener("play", () => { v.muted = true; }, { once: true });
+    v.addEventListener("play", () => { v.muted = false; }, { once: true });
   });
 })();
 </script>
